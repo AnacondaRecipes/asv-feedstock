@@ -10,51 +10,48 @@ source:
   sha256: 805fc3cc46c0bcf3e7baeaa16a12e4b92f1276c25490db4cb80fc541afa52bfc
 
 build:
-  number: 2
-  script: {{ PYTHON }} -m pip install . -vv
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+  entry_points:
+    - asv = asv.main:main
 
 requirements:
   build:
-    - python                                 # [build_platform != target_platform]
-    - cross-python_{{ target_platform }}     # [build_platform != target_platform]
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
   host:
     - python
     - pip
     - setuptools
-    - sphinx
-    - sphinx_bootstrap_theme
-    - six
+    - wheel
   run:
     - python
-    - setuptools
-    - six
+    - six >=1.4
 
 test:
   imports:
     - asv
-#  requires:
-#    - pytest
-#  files:
-#    - {{ SRC_DIR }}/test/
-#  commands:
-#    - cd {{ SRC_DIR }}/test/
-#    - py.test
+    - asv.commands
+    - asv.plugins
+    - asv.extern
+  requires: 
+    - pip
+  commands: 
+    - pip check
 
 about:
-  home: https://github.com/spacetelescope/asv
+  home: https://github.com/airspeed-velocity/asv
   license: BSD-3-Clause
+  license_family: BSD
   license_file: LICENSE.rst
   summary: A simple Python benchmarking tool with web-based reporting
-
   description: |
     It is primarily designed to benchmark a single project over its lifetime
     using a given suite of benchmarks. The results are displayed in an
     interactive web frontend that requires only a basic static webserver to
     host.
-  doc_url: http://asv.readthedocs.io/en/latest/index.html
-  dev_url: https://github.com/spacetelescope/asv
+  doc_url: https://asv.readthedocs.io/en/latest/index.html
+  dev_url: https://github.com/airspeed-velocity/asv
 
 extra:
   recipe-maintainers:
