@@ -1,5 +1,5 @@
 {% set name = "asv" %}
-{% set version = "0.5.1" %}
+{% set version = "0.6.4" %}
 
 package:
   name: {{ name|lower }}
@@ -7,7 +7,7 @@ package:
 
 source:
   url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: 805fc3cc46c0bcf3e7baeaa16a12e4b92f1276c25490db4cb80fc541afa52bfc
+  sha256: 1d124184171cfe106e3e57ac04e3221b8d4571c9bd6ca2c6498a8c7407339df1
 
 build:
   number: 0
@@ -27,16 +27,24 @@ requirements:
   run:
     - python
     - six >=1.4
+    - asv_runner
+    - conda
+    - json5
+    - libmambapy
+    - tabulate
 
 test:
   imports:
     - asv
     - asv.commands
     - asv.plugins
-    - asv.extern
-  requires: 
+  requires:
     - pip
-  commands: 
+    - build
+    - pympler
+    - pyyaml
+    - virtualenv
+  commands:
     - pip check
 
 about:
