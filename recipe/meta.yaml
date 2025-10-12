@@ -18,6 +18,7 @@ build:
 
 requirements:
   build:
+    - {{ stdlib('c') }}
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
   host:
@@ -27,8 +28,7 @@ requirements:
     - setuptools-scm >=6
   run:
     - python
-    - six >=1.4
-    - asv_runner >=v0.2.1
+    - asv_runner >=0.2.1
     - json5
     - python-build
     - tabulate
@@ -37,19 +37,37 @@ requirements:
     - importlib-metadata
     - tomli  # [py<311]
     - colorama  # [win]
-    - pyyaml
-    - pympler
+    - pyyaml  # [python_impl != 'pypy']
+    - pympler  # [python_impl != 'pypy']
 
-test:
+test: 
+  source_files:
+    - test
   imports:
     - asv
+    - asv.benchmarks
     - asv.commands
-    - asv.plugins
-    - asv.extern
+    - asv.commands.compare
+    - asv.commands.preview
+    - asv.commands.run
+    - asv.console
+    - asv.environment
+    - asv.graph
+    - asv.machine
+    - asv.plugins.conda
+    - asv.publishing
+    - asv.repo
+    - asv.results
+    - asv.step_detect
+    - asv.util
   requires:
     - pip
+    - pytest
+    - selenium
   commands:
     - pip check
+    - asv --version
+    - pytest -v test
 
 about:
   home: https://github.com/airspeed-velocity/asv
