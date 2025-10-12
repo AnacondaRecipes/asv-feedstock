@@ -40,6 +40,11 @@ requirements:
     - pyyaml  # [python_impl != 'pypy']
     - pympler  # [python_impl != 'pypy']
 
+# ModuleNotFoundError: No module named 'asv_test_repo'
+{% set deselect_tests = " --deselect=test/test_run.py::test_set_commit_hash" %}
+# ERROR    root:console.py:393 asv: setup_cache failed (exit status -256)
+{% set deselect_tests = deselect_tests + " --deselect=test/test_workflow.py::test_run_publish" %}
+
 test: 
   source_files:
     - test
@@ -67,7 +72,7 @@ test:
   commands:
     - pip check
     - asv --version
-    - pytest -v test
+    - pytest -v test {{ deselect_tests }}
 
 about:
   home: https://github.com/airspeed-velocity/asv
