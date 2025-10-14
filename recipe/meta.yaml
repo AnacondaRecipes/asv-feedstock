@@ -1,43 +1,82 @@
 {% set name = "asv" %}
-{% set version = "0.5.1" %}
+{% set version = "0.6.5" %}
 
 package:
   name: {{ name|lower }}
   version: {{ version }}
 
 source:
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: 805fc3cc46c0bcf3e7baeaa16a12e4b92f1276c25490db4cb80fc541afa52bfc
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: a8eeb7c5037cd78c146bd727d27203132438d4d62f36e669eb0cd5d63da0cf39
 
 build:
-  number: 1
+  number: 0
   script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
   entry_points:
     - asv = asv.main:main
+  skip: true  # [py<37]
 
 requirements:
   build:
+    - {{ stdlib('c') }}
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
   host:
     - python
     - pip
-    - setuptools
-    - wheel
+    - setuptools >=64,<72.2.0
+    - setuptools-scm >=6
   run:
     - python
-    - six >=1.4
+    - asv_runner >=0.2.1
+    - json5
+    - python-build
+    - tabulate
+    - virtualenv
+    - packaging
+    - importlib-metadata
+    - tomli  # [py<311]
+    - colorama  # [win]
+    - pyyaml  # [python_impl != 'pypy']
+    - pympler  # [python_impl != 'pypy']
 
-test:
+# ModuleNotFoundError: No module named 'asv_test_repo'
+{% set deselect_tests = " --deselect=test/test_run.py::test_set_commit_hash" %}  # [unix]
+# ERROR    root:console.py:393 asv: setup_cache failed (exit status -256)
+{% set deselect_tests = deselect_tests + " --deselect=test/test_workflow.py::test_run_publish" %}  # [unix]
+
+test: 
+  source_files:
+    - test
   imports:
     - asv
+    - asv.benchmarks
     - asv.commands
-    - asv.plugins
-    - asv.extern
-  requires: 
+    - asv.commands.compare
+    - asv.commands.preview
+    - asv.commands.run
+    - asv.console
+    - asv.environment
+    - asv.graph
+    - asv.machine
+    - asv.plugins.conda
+    - asv.publishing
+    - asv.repo
+    - asv.results
+    - asv.step_detect
+    - asv.util
+  requires:
     - pip
-  commands: 
+    - pytest
+    - selenium
+  commands:
     - pip check
+    - asv --version
+    #  Skip for windows due to many fails with following issue:
+    #  Cloning into 'C:\Users\task_176034184117788\AppData\Local\Temp\pytest-of-task_176034184117788\pytest-0\test_discover_benchmarks0\env\28ce2c79fdbca74891d3623705fc0783\project'...
+    #  fatal: Could not read from remote repository.
+    #  Please make sure you have the correct access rights
+    - pytest -v test {{ deselect_tests }}  # [not win]
 
 about:
   home: https://github.com/airspeed-velocity/asv
@@ -50,7 +89,7 @@ about:
     using a given suite of benchmarks. The results are displayed in an
     interactive web frontend that requires only a basic static webserver to
     host.
-  doc_url: https://asv.readthedocs.io/en/latest/index.html
+  doc_url: https://asv.readthedocs.io
   dev_url: https://github.com/airspeed-velocity/asv
 
 extra:
