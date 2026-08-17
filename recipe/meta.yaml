@@ -1,20 +1,23 @@
 {% set name = "asv" %}
-{% set version = "0.6.5" %}
+{% set version = "0.6.6" %}
 
 package:
-  name: {{ name|lower }}
+  name: {{ name }}
   version: {{ version }}
 
 source:
   url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: a8eeb7c5037cd78c146bd727d27203132438d4d62f36e669eb0cd5d63da0cf39
+  sha256: 82e47105db8f56d9b1e54763dd01a1709d2722ad2f727b21521628c3e110bdc6
+  patches:
+    # Dummy conda package requires setuptools in its isolated build environment.
+    - 0001-Add-setuptools-to-dummy-conda-build.patch
 
 build:
   number: 0
   script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
   entry_points:
     - asv = asv.main:main
-  skip: true  # [py<37]
+  skip: true  # [py<39]
 
 requirements:
   build:
@@ -24,11 +27,11 @@ requirements:
   host:
     - python
     - pip
-    - setuptools >=64,<72.2.0
-    - setuptools-scm >=6
+    - setuptools >=77,<=80.9.0
+    - setuptools-scm
   run:
     - python
-    - asv_runner >=0.2.1
+    - asv_runner >=0.2.5
     - json5
     - python-build
     - tabulate
@@ -69,6 +72,7 @@ test:
     - pip
     - pytest
     - selenium
+    - git
   commands:
     - pip check
     - asv --version

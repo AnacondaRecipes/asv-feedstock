@@ -1,0 +1,12 @@
+diff --git a/test/tools.py b/test/tools.py
+index 6e3f955..331642b 100644
+--- a/test/tools.py
++++ b/test/tools.py
+@@ -638,6 +638,7 @@ def _build_dummy_conda_pkg(name, version, build_dir, dst):
+           host:
+             - pip
+             - python
++            - setuptools
+           run:
+             - python
+         about:
