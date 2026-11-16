@@ -4,7 +4,7 @@
       */
      {Py_mod_exec, (void *)rangemedian_modexec},
  
--#ifdef Py_GIL_DISABLED
-+#if defined(Py_GIL_DISABLED) && !defined(Py_LIMITED_API)
+-#ifdef Py_mod_gil
++#if defined(Py_mod_gil) && defined(Py_MOD_GIL_NOT_USED)
      {Py_mod_gil, Py_MOD_GIL_NOT_USED},
  #endif
