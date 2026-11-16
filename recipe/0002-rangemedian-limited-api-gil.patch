@@ -1,0 +1,10 @@
+--- a/asv/_rangemedian.cpp
++++ b/asv/_rangemedian.cpp
+@@ -502,7 +502,7 @@
+      */
+     {Py_mod_exec, (void *)rangemedian_modexec},
+ 
+-#ifdef Py_GIL_DISABLED
++#if defined(Py_GIL_DISABLED) && !defined(Py_LIMITED_API)
+     {Py_mod_gil, Py_MOD_GIL_NOT_USED},
+ #endif
