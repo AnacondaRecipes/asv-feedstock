@@ -13,7 +13,7 @@ source:
     - 0001-Add-setuptools-to-dummy-conda-build.patch
 
 build:
-  number: 0
+  number: 1
   script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
   entry_points:
     - asv = asv.main:main
