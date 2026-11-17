@@ -11,9 +11,10 @@ source:
   patches:
     # Dummy conda package requires setuptools in its isolated build environment.
     - 0001-Add-setuptools-to-dummy-conda-build.patch
+    - 0002-rangemedian-limited-api-gil.patch  # [py>=315]
 
 build:
-  number: 0
+  number: 1
   script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
   entry_points:
     - asv = asv.main:main
